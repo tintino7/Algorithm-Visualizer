@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo} from "react";
-import Cell from './Cell.jsx'
-
+import Node from './Node.jsx'
 
 
 function Grid(){
@@ -12,14 +11,12 @@ function Grid(){
     const [startorFinish, setStartorFinish] = useState({
                                                         active : false, 
                                                         type : '', 
-                                                        mouseLeftGrid : false,
                                                         startNode : '',
                                                         finishNode : ''
                                                         })
-    
-    const [startandFinish, setStartandFinish] = useState({start : '', finish : ''})
 
-    /* I will update width and height states making a re rendering, So the grid produce cells according to the height and width */
+    /* I will update width and height states making a re rendering, 
+    So the grid produce cells according to the height and width */
     function handleResize(){
         setWidth(window.innerWidth)
         setHeight(window.innerHeight)
@@ -28,21 +25,20 @@ function Grid(){
     
     /* I will update make wall state to create walls */
     function handleWall(e){
-        e.preventDefault()
         setMakeWall(true)
     }
 
 
-    /*  I will work when mouseup event happens and set the below states false , So it won't make unnecssary walls or make start or finish node move */
+    /*  I will work when mouseup event happens and set the below states false , 
+    So it won't make unnecssary walls or make start or finish node move */
    function handleMouseUp (){
     setMakeWall(false)
     setStartorFinish({...startorFinish, active : false, type : ''})
     }
 
 
-    /* It will update the startorFinish state to move start of finish Cell */
+    /* I will update the startorFinish state to move start of finish Cell */
     function handleStartorFinish (e, cellType){
-        e.preventDefault()
         setStartorFinish({...startorFinish, active : true, type : cellType})
     }
 
@@ -64,8 +60,7 @@ function Grid(){
         <tr key={columnIndex}>
             {Array.from({ length: Math.trunc((width*0.85)/25)}, (_, rowIndex) => 
 
-                <Cell 
-                    initialClassName = {columnIndex === yAxisStart && rowIndex === xAxisStart ? 'start' : columnIndex === yAxisFinish && rowIndex === xAxisFinish ? 'finish' : ''}
+                <Node
                     /* Functions to update state variables */
                     createWall={handleWall}
                     moveStartFinish={handleStartorFinish}
@@ -75,41 +70,40 @@ function Grid(){
                     /* Unique key and Id for each child component */
                     key={rowIndex} 
                     id={`${columnIndex}-${rowIndex}`}
+                    updateStartorFinish = {updateStartorFinish}
                 />
             )}
         </tr>);   
 
 
-    useEffect(() => {
 
-        const tableGrid = document.getElementById('grid')
+    useEffect(() => {
 
         window.addEventListener('resize', handleResize)
         document.addEventListener('mouseup', handleMouseUp)
-        tableGrid.addEventListener('mouseleave', handleMouseLeaveGrid)
-        tableGrid.addEventListener('mouseenter', handleMouseEnterGrid)
+        document.addEventListener('touchend', handleMouseUp)
         
         return () => {
             window.removeEventListener('resize', handleResize)
             document.removeEventListener('mouseup', handleMouseUp)
-            tableGrid.removeEventListener('mouseleave', handleMouseLeaveGrid)
-            tableGrid.removeEventListener('mouseenter', handleMouseEnterGrid)
+            document.removeEventListener('touchend', handleMouseUp)
         }
     },[width, height, startorFinish])
 
 
+    /* Update the start and finish node initially */
     useEffect(()=>{
         setStartorFinish({...startorFinish, startNode : `${yAxisStart}-${xAxisStart}`, finishNode : `${yAxisFinish}-${xAxisFinish}`})
-    },[])
+    },[width, height])
 
 
-    function handleMouseLeaveGrid(){
-        setStartorFinish({...startorFinish, mouseLeftGrid : true})
-        console.table(startorFinish)
-    }
-
-    function handleMouseEnterGrid(){    
-        setStartorFinish({...startorFinish, mouseLeftGrid : false})
+   
+    function updateStartorFinish(node){
+        if(startorFinish.type === 'start'){
+            setStartorFinish({...startorFinish, startNode : node})
+        } else if (startorFinish.type === 'finish'){
+            setStartorFinish({...startorFinish, finishNode : node})
+        }
     }
 
     
@@ -118,7 +112,7 @@ function Grid(){
             <tbody>
                 {gridColumns}
             </tbody>     
-        </table>
+        </table>     
     )
 }
 

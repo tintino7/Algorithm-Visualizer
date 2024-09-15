@@ -8,6 +8,13 @@ body{
   background-color: rgb(28, 29, 31);
 }
 
+/* #wrapper{
+  padding: 2px;
+  border: 1px solid red;
+  margin: 10% auto 0px auto;
+  width: fit-content;
+} */
+
 
 
 .cell:hover {
@@ -26,6 +33,14 @@ td{
   border: 1px solid #b3b3b3;
   /* border: 1px solid rgb(26, 255, 0); */
   background-color: #878787;
+}
+
+.visitedcell{
+  width: 25px;
+  height: 25px;
+  border: 1px solid #b3b3b3;
+  /* border: 1px solid rgb(26, 255, 0); */
+  background-color: #ff0000;
 }
 
 .wall {
@@ -47,4 +62,12 @@ td{
 
 .finish{
   background-color: rgb(0, 60, 255);
+}
+
+.gridButton{
+  padding: 5px;
+  margin: 5px;
+  font-size: medium;
+  background-color: #BC4A3C;
+  
 }

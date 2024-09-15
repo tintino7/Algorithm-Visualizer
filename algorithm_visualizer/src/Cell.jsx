@@ -1,13 +1,10 @@
-import { useState} from "react";
+import {  useState, useRef} from "react";
 
+function Cell({createWall, moveStartFinish, startOrFinish, wall, id,updateStartorFinish}){
 
+    const [myClassName, setMyClassName] = useState('') 
+    const touchMap = useRef(new Map())
 
-
-function Cell({initialClassName, createWall, moveStartFinish, startOrFinish, wall, id}){
-
-   
-    const [lastStartorFinishNode] = useState({start : initialClassName === 'start', finish : initialClassName === 'false'}) 
-    const [previousClassName, setPreviousClassName] = useState('')
 
     /* Mouse is down and when i mouse over make wall */
     const handleMouseOver = (e) => {
@@ -15,65 +12,112 @@ function Cell({initialClassName, createWall, moveStartFinish, startOrFinish, wal
         const target = e.target
         if (wall){
             if(target.className == 'wall'){
-                target.className = ''
+                setMyClassName('')
             }
             else if(target.className == ''){
-                target.className = 'wall'
+                setMyClassName('wall')
             }
         }
     };
 
-    /* Make wall when i click into a cell */
-    const handleClick = (e) => {
-        const target = e.target
-        if(target.className == 'wall'){
-            target.className = ''
-        }
-        else if(target.className == ''){
-            target.className = 'wall'
-        }
-    }
 
     /* Function to set states for wall and startorFinish */
     const handleMouseDown = (e) => {
+        e.preventDefault()
         const target = e.target
         if(target.className === 'start' || target.className === 'finish'){
             moveStartFinish(e, target.className)
         }
         else {
             createWall(e)
+            /* For that initial cell */
+            setMyClassName(myClassName === 'wall'? '': 'wall')
         }
     }
 
-    /* Grapped the start or finish node and entered in to a cell */
-    const handleMouseEnter = (e) => {
+
+    /* This is the equilant of mousedown but fro touch devices */
+    function handleTouchStart(e){
+        console.log(e)
+        const target = e.target
+        if(target.className === 'start' || target.className === 'finish'){
+            moveStartFinish(e, target.className)
+            console.log('startorFinish')
+        }
+        else {
+            createWall(e)
+            /* For that initial cell */
+            setMyClassName(myClassName === 'wall'? '': 'wall')
+            console.log('wall')
+        }
+    }
+
+
+    /* function to make changes to the component when touch move on touch devices */
+    function handleTouchMove(e){
+
+        const touch = e.touches[0]
+        const element = document.elementFromPoint(touch.clientX, touch.clientY);
+
+        if (wall){
+            if(touchMap.current.has(element.id)){
+                return
+            } else {
+                touchMap.current.set(element.id, element.id)
+                if(element.className === 'wall'){
+                    element.className = ''
+                } else if (element.className === ''){
+                    element.className = 'wall'
+                }
+            }
+        } else if (startOrFinish.type === 'start' || startOrFinish.type === 'finish'){
+            if(startOrFinish.active){
+                if(element.tagName === 'TD'){
+                    updateStartorFinish(element.id)
+                }
+                
+                console.log(element.tagName)
+            }
+        }
         
-        const target = e.target
-        if(startOrFinish.active){
-            setPreviousClassName(target.className)
-            target.className = startOrFinish.type
-        }
-    }
 
-    /* Grapped the start or finish node and left a cell */
-    const handleMouseLeave = (e) => {
-        const target = e.target
-        if(startOrFinish.active && !startOrFinish.mouseLeftGrid){
-            target.className = previousClassName
-            setPreviousClassName('')   
-        }
     }
 
 
+
+        const handleMouseEnter = (e) => {
+            /* e.preventdefault() */
+            const target = e.target
+            if(startOrFinish.active){
+                updateStartorFinish(target.id)
+            }
+        }
+
+
+
+        let NodeclassName = ''
+
+        if(startOrFinish.startNode === id){
+            NodeclassName = 'start'
+        } else if (startOrFinish.finishNode === id){
+            NodeclassName = 'finish'
+        }
+        else{
+            NodeclassName = myClassName
+        }
+
+        
     return(
         <td 
-            className={initialClassName}
+            className={NodeclassName}
             onMouseOver={handleMouseOver}  
-            onClick={handleClick} 
             onMouseDown={handleMouseDown} 
+            onTouchStart = {handleTouchStart}
+            onTouchMove = {handleTouchMove}
+            onTouchEnd={e => console.log(e)}
             id={id} 
-            onMouseEnter={handleMouseEnter} 
-            onMouseLeave={handleMouseLeave}>    
+            onPointerEnter={handleMouseEnter} 
+            >    
         </td>
     )
 

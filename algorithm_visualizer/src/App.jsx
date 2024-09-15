@@ -5,7 +5,7 @@ import Check from './Check.jsx'
 function App() {
 
   return (
-    <Grid/>
+    <Check/>
   )
 }
 
