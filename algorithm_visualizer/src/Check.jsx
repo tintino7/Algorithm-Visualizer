@@ -61,8 +61,6 @@ function Check(){
     const yAxisFinish = useMemo(() => Math.floor(Math.random() * screenHeight), [screenHeight]);
 
 
-
-    
     /* An array of Cell components represents each row in grid */
     const gridColumns = Array.from({ length: screenHeight}, (_, columnIndex) => 
         

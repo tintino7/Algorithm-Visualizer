@@ -1,4 +1,4 @@
-import {  useState, useEffect, useRef, forwardRef} from "react";
+import {  useState, useRef, forwardRef} from "react";
 
 const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, updateStartorFinish}, ref) =>{
 
@@ -6,10 +6,6 @@ const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, 
     const [myClassName, setMyClassName] = useState('') 
     const touchMap = useRef(new Map())
 
-
-    /* useEffect(() => {
-        console.log('resize')
-    },[width, height]) */
 
     /* Mouse is down and when i mouse over make wall */
     const handleMouseOver = (e) => {
@@ -95,8 +91,6 @@ const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, 
                 console.log(element.tagName)
             }
         }
-        
-
     }
 
 
