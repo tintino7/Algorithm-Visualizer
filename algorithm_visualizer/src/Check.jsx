@@ -62,11 +62,17 @@ function Check(){
 
 
     /* An array of Cell components represents each row in grid */
-    const gridColumns = Array.from({ length: screenHeight}, (_, columnIndex) => 
+    const gridColumns = Array.from({ length: screenHeight}, (_, rowIndex) => 
         
-            Array.from({ length: screenWidth}, (_, rowIndex) => 
+            Array.from({ length: screenWidth}, (_, columnIndex) => 
                 <Node
-                    ref={(el) => cellElementsRef.current.set(`${columnIndex}-${rowIndex}`, el)}
+                    ref={(el) => cellElementsRef.current.set(`${rowIndex}-${columnIndex}`, {
+                                                                                            element : el, 
+                                                                                            distance : Infinity, 
+                                                                                            prevNode : null,
+                                                                                            X : rowIndex,
+                                                                                            Y : columnIndex
+                                                                                            })}
                     /* Functions to update state variables */
                     createWall={handleWall}
                     moveStartFinish={handleStartorFinish}
@@ -74,8 +80,8 @@ function Check(){
                     startOrFinish={startorFinish}
                     wall={makeWall} 
                     /* Unique key and Id for each child component */
-                    key={clear ? rowIndex : rowIndex + 1000} 
-                    id={`${columnIndex}-${rowIndex}`}
+                    key={clear ? columnIndex : columnIndex + 1000} 
+                    id={`${rowIndex}-${columnIndex}`}
                     updateStartorFinish = {updateStartorFinish}
                 />
             )
@@ -142,29 +148,21 @@ function Check(){
                 <button className="gridButton" onClick={() => setClear(!clear)} >
                     clear
                 </button>
-                <button className="gridButton" onClick={() => cellElementsRef.current.get('0-0').className = 'wall'}>
+                <button className="gridButton" onClick={() => cellElementsRef.current.get('0-0').element.className = 'wall'}>
                     change class
                 </button>   
             </div>
 
             <table id="grid">
                 <tbody>
-                    {gridColumns.map((column, columnIndex) => {
+                    {gridColumns.map((row, rowIndex) => {
                         return (
-                            <tr key={clear ? columnIndex : columnIndex + 1000}>
-                                {(column)}
+                            <tr key={clear ? rowIndex : rowIndex + 1000}>
+                                {(row)}
                             </tr>
                         )
                     })}
 
-
-                    {gridColumns.map((column, columnIndex) => {
-                        return (
-                            <tr key={clear ? columnIndex : columnIndex + 1000}>
-                                {console.log(column[0].props.id)}
-                            </tr>
-                        )
-                    })}
                 </tbody>     
             </table>  
         </div>

@@ -1,47 +1,80 @@
+import PriorityQueue from 'js-priority-queue';
 
-function isInsideGrid (nodeId, rowLength, columnLength){
+function insideGrid (node, rowLength, columnLength){
 
-    let [rowIndex, columnIndex] = nodeId.split('-')
-    return parseInt(rowIndex) < rowLength && parseInt(columnIndex) < columnLength
+    return node.X < rowLength && node.Y < columnLength
 
 }
 
 
 
-function dijkstras (grid, startNode, endNode){
+function dijkstras (grid, startNode, endNode){ // grid--> hashmap, startNode---> string '0-0', endNode---> string '20-20'
 
-    let visitedNodes = new Map // All the visited Nodes
+    
+    let visitedNodes = new Map() // All the visited Nodes
     let unvisitedNodes = grid // All the unvisited Nodes
-    let distances = new Map // All the nodes and their previous nodes
+    let distances = new Map(grid) // All the nodes and their previous nodes and distances {element : el, distance : Infinity, prevNode : null}
     let orderOfVisitedNodes = [] // The order which the nodes are visited
 
     let foundEndNode = false // To stop the loop when the path to endNode is found
 
+    const priorityQueue = new PriorityQueue({
+        comparator: function(a, b) { // comparator function to give priority to min value
+          return a.distance - b.distance;
+        }
+      });
 
+    
+    priorityQueue.queue(startNode)
+    unvisitedNodes.delete(startNode)
+    visitedNodes.set(startNode, startNode)
+    distances.set(startNode, distances.get(startNode).distance = 0)
+    orderOfVisitedNodes.push(startNode)
 
+    const changeInXDirection = [1, 0, 1, 0]
+    const changeInYDirection = [0, 1, 0, 1]
+      
 
-    while(!foundEndNode){
+    while(!foundEndNode && priorityQueue.length > 0){
+
+        const currentNode = priorityQueue.dequeue()
+
+        for (let i = 0; i < 4; i++){
+            // Get neighbor coordinates
+            const neighbourID = `${currentNode.X + changeInXDirection[i]}-${currentNode.Y + changeInYDirection[i]}`;
+            const neighbour = unvisitedNodes.get(neighbourID);
+
+            if(!neighbour)continue; // Skip if no neighbor exists
+
+            const isWall = neighbour.el.className === 'wall'
+            const isEndNode = neighbour.id === endNode
+
+            // If wall or not inside grid or it is visited
+            if(isWall || !insideGrid(neighbour, 1, 1) || visitedNodes.has(neighbour.id))continue; 
+                
+            
+            if (isEndNode){
+                foundEndNode = true
+                orderOfVisitedNodes.push(neighbour)
+                break
+            } 
+
+            let dist = currentNode.distance + 1
+
+            priorityQueue.queue(neighbour)
+
+            if (dist < distances.get(neighbourID).distance){
+                const neighbourDistance = distances.get(neighbourID)
+                neighbourDistance = {...neighbourDistance, prevNode : currentNode, distance : dist}
+                distances.set(neighbourID, neighbourDistance)
+
+            }
+                 
+        }
 
     }
 
 
-
-   /*  distance => Map({'0-0': '0-1'}---->{'0-1': '0-2'}----->{0-4 : 0-6})
-
-       visitedNodes => Map({'0-0'}, {0-1}, {0-5}), 
-
-       visitedNode.set(currentNode.id)
-   */
-
-
-       /* 
-       visitedNodes.push(unvisitedNode.get(startNode))
-       currentNode = unvisitedNodes.pop(startNode)
-
-       for neighbour in currentNode
-
-            if distances.get(neighbour)
-
-       
-       */
+    return orderOfVisitedNodes, distances
+   
 }
