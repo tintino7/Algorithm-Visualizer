@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useRef} from "react";
 import Node from './Node.jsx'
+import dijkstras from "./Algorithms/dijkstra's.js";
 
 
 
@@ -127,6 +128,41 @@ function Check(){
         
     } */
 
+
+    function animate(){
+
+        const {orderOfVisitedNodes, distances} = dijkstras(cellElementsRef.current, startorFinish.startNode, startorFinish.finishNode, screenHeight, screenWidth)
+        console.log(typeof(orderOfVisitedNodes))
+        
+        let index = 1
+
+        const interval = setInterval(() => {
+            
+            cellElementsRef.current.get(orderOfVisitedNodes[index]).element.className = 'find'
+            index++
+            
+            if (index >= orderOfVisitedNodes.length - 1) {
+              clearInterval(interval);
+              animatePath(distances)
+              
+            }
+          }, 10);
+
+          
+    }
+
+    function animatePath(distances){
+        let node = startorFinish.finishNode
+          
+
+          do {
+            console.log(node)
+            let previousNode = distances.get(node).prevNode
+            cellElementsRef.current.get(previousNode).element.className = 'path'
+            node = previousNode
+
+          } while (node !== startorFinish.startNode);
+    }
     
 
 
@@ -148,8 +184,8 @@ function Check(){
                 <button className="gridButton" onClick={() => setClear(!clear)} >
                     clear
                 </button>
-                <button className="gridButton" onClick={() => cellElementsRef.current.get('0-0').element.className = 'wall'}>
-                    change class
+                <button className="gridButton" onClick={() => animate()}>
+                    call dijikrists
                 </button>   
             </div>
 
