@@ -137,10 +137,9 @@ const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, 
             onMouseDown={handleMouseDown} 
             onTouchStart = {handleTouchStart}
             onTouchMove = {handleTouchMove}
-            onTouchEnd={e => console.log(e)}
             id={id} 
             onPointerEnter={handleMouseEnter} 
-            /* onMouseLeave={handleMouseLeave} */>    
+            >    
         </td>
     )
 

@@ -2,7 +2,7 @@ import PriorityQueue from 'js-priority-queue';
 
 function insideGrid (node, rowLength, columnLength){
 
-    return node.X < rowLength && node.Y < columnLength
+    return node.row < rowLength && node.column < columnLength
 
 }
 
@@ -26,7 +26,7 @@ function dijkstras (grid, startNode, endNode, rowLength, columnLength){ // grid-
 
     grid.forEach((value, key) => {
         
-        unvisitedNodes.set(key, {X : value.X, Y : value.Y, id : key, className : value.element.className})
+        unvisitedNodes.set(key, {row : value.row, column : value.column, id : key, className : value.element.className})
         distances.set(key, {prevNode : null, distance : Infinity})
     });
     
@@ -51,8 +51,8 @@ function dijkstras (grid, startNode, endNode, rowLength, columnLength){ // grid-
      */
 
 
-    const changeInXDirection = [1, 0, -1, 0]
-    const changeInYDirection = [0, 1, 0, -1]
+    const changeInRowDirection = [0, -1, 0, 1]
+    const changeInColumnDirection = [1, 0, -1, 0]
 
     
       
@@ -72,10 +72,12 @@ function dijkstras (grid, startNode, endNode, rowLength, columnLength){ // grid-
         visitedNodes.set(currentNode.id, currentNode);
         unvisitedNodes.delete(currentNode.id);
 
-        for (let i = 0; i < 4; i++){
-            // Get neighbor coordinates
+        for (let i = 0; i < changeInRowDirection.length; i++){
             
-            const neighbourID = `${currentNode.X + changeInXDirection[i]}-${currentNode.Y + changeInYDirection[i]}`;
+            // Get neighbor coordinates
+            const neighbourID = `${currentNode.row + changeInRowDirection[i]}-${currentNode.column + changeInColumnDirection[i]}`;
+            
+           
 
             const neighbour = unvisitedNodes.get(neighbourID);
             
@@ -91,27 +93,28 @@ function dijkstras (grid, startNode, endNode, rowLength, columnLength){ // grid-
             
             if (isEndNode){
                 foundEndNode = true
-                console.log(neighbour, 'endnode')
+                
                 orderOfVisitedNodes.push(neighbourID)
                 distances.set(neighbourID, {prevNode : currentNode.id, distance : 1})
+                
                 return {orderOfVisitedNodes, distances}
             } 
 
             let dist = distances.get(currentNodeId).distance + 1
+            
 
             if (dist < distances.get(neighbourID).distance){
                 let neighbourDistance = distances.get(neighbourID)
                 neighbourDistance = { ...neighbourDistance, prevNode: currentNode.id, distance: dist };
                 distances.set(neighbourID, neighbourDistance)
                 priorityQueue.queue({ id: neighbourID, distance: dist })
-
-            }
-                 
+               
+            }  
         }
-
     }
 
 
+    
     return {orderOfVisitedNodes, distances}
    
 }

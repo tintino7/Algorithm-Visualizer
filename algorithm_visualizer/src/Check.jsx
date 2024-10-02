@@ -71,8 +71,8 @@ function Check(){
                                                                                             element : el, 
                                                                                             distance : Infinity, 
                                                                                             prevNode : null,
-                                                                                            X : rowIndex,
-                                                                                            Y : columnIndex
+                                                                                            row : rowIndex,
+                                                                                            column : columnIndex
                                                                                             })}
                     /* Functions to update state variables */
                     createWall={handleWall}
@@ -132,7 +132,7 @@ function Check(){
     function animate(){
 
         const {orderOfVisitedNodes, distances} = dijkstras(cellElementsRef.current, startorFinish.startNode, startorFinish.finishNode, screenHeight, screenWidth)
-        console.log(typeof(orderOfVisitedNodes))
+        
         
         let index = 1
 
@@ -153,15 +153,23 @@ function Check(){
 
     function animatePath(distances){
         let node = startorFinish.finishNode
+        
+        // If we didn't found the end node || if start or finish node inside a fully closed wall
+        if(distances.get(node).prevNode === null)return
           
-
-          do {
-            console.log(node)
+        const interval = setInterval(() => {
+            
             let previousNode = distances.get(node).prevNode
             cellElementsRef.current.get(previousNode).element.className = 'path'
             node = previousNode
+            
+            if (previousNode === startorFinish.startNode) {
+              clearInterval(interval);
+              
+            }
+          }, 20);
 
-          } while (node !== startorFinish.startNode);
+          
     }
     
 
