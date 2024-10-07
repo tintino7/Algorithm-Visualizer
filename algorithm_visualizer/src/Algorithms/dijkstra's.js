@@ -26,8 +26,11 @@ function dijkstras (grid, startNode, endNode, rowLength, columnLength){ // grid-
 
     grid.forEach((value, key) => {
         
-        unvisitedNodes.set(key, {row : value.row, column : value.column, id : key, className : value.element.className})
-        distances.set(key, {prevNode : null, distance : Infinity})
+        if(value.element){
+            unvisitedNodes.set(key, {row : value.row, column : value.column, id : key, className : value.element.className || ''})
+            distances.set(key, {prevNode : null, distance : Infinity})
+        }
+       
     });
     
     

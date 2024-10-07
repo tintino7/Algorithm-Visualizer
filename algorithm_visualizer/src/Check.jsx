@@ -15,18 +15,22 @@ function Check(){
                                                         active : false, 
                                                         type : '', 
                                                         startNode : '',
-                                                        finishNode : ''
+                                                        finishNode : '', 
                                                         })
     
     const [clear, setClear] = useState(true)
     /* Holds reference to the all cell Components */
     const cellElementsRef = useRef(new Map())
 
+    const isAnimating = useRef(false)
+
    /*  console.log(cellElementsRef.current) */
     
 
     /* I will update width and height states making a re rendering, So the grid produce cells according to the height and width */
     function handleResize(){
+
+        if(isAnimating.current)return;
         setWidth(window.innerWidth)
         setHeight(window.innerHeight)
     }
@@ -34,6 +38,7 @@ function Check(){
     
     /* I will update make wall state to create walls */
     function handleWall(e){
+        if(isAnimating.current)return;
         setMakeWall(true)
     }
 
@@ -41,6 +46,7 @@ function Check(){
     /*  I will work when mouseup event happens and set the below states false , 
     So it won't make unnecssary walls or make start or finish node move */
    function handleMouseUp (){
+    if(isAnimating.current)return;
     setMakeWall(false)
     setStartorFinish({...startorFinish, active : false, type : ''})
     }
@@ -48,6 +54,7 @@ function Check(){
 
     /* I will update the startorFinish state to move start of finish Cell */
     function handleStartorFinish (e, cellType){
+        if(isAnimating.current)return;
         setStartorFinish({...startorFinish, active : true, type : cellType})
     }
 
@@ -61,6 +68,7 @@ function Check(){
     const xAxisFinish = useMemo(() => Math.floor(Math.random() * screenWidth), [screenWidth]);
     const yAxisFinish = useMemo(() => Math.floor(Math.random() * screenHeight), [screenHeight]);
 
+    console.log('rendered')
 
     /* An array of Cell components represents each row in grid */
     const gridColumns = Array.from({ length: screenHeight}, (_, rowIndex) => 
@@ -84,6 +92,7 @@ function Check(){
                     key={clear ? columnIndex : columnIndex + 1000} 
                     id={`${rowIndex}-${columnIndex}`}
                     updateStartorFinish = {updateStartorFinish}
+                    isAnimating={isAnimating.current}
                 />
             )
     );   
@@ -97,15 +106,13 @@ function Check(){
         window.addEventListener('resize', handleResize)
         document.addEventListener('mouseup', handleMouseUp)
         document.addEventListener('touchend', handleMouseUp)
-        /* tableGrid.addEventListener('mouseleave', handleMouseLeaveGrid)
-        tableGrid.addEventListener('mouseenter', handleMouseEnterGrid) */
+        
         
         return () => {
             window.removeEventListener('resize', handleResize)
             document.removeEventListener('mouseup', handleMouseUp)
             document.removeEventListener('touchend', handleMouseUp)
-            /* tableGrid.removeEventListener('mouseleave', handleMouseLeaveGrid)
-            tableGrid.removeEventListener('mouseenter', handleMouseEnterGrid) */
+           
         }
     },[width, height, startorFinish])
 
@@ -116,26 +123,28 @@ function Check(){
     },[width, height])
 
 
-    /* function handleMouseLeaveGrid(){
-        setStartorFinish({...startorFinish, mouseLeftGrid : true})
-        
-        console.log(startorFinish)
-        
-    }
- */
-    /* function handleMouseEnterGrid(){    
-        setStartorFinish({...startorFinish, mouseLeftGrid : false})
-        
-    } */
+    
 
 
-    function animate(){
+    function animateorderofvisitedNodes(){
+
+        isAnimating.current = true
+        console.log(gridColumns)
+        console.log(cellElementsRef.current)
+
+        cellElementsRef.current.forEach((value, key)=>{
+            if (value.element){
+                value.element.className = value.element.className === 'path' || value.element.className === 'find' ? '' : value.element.className
+            }
+            
+        })
+
 
         const {orderOfVisitedNodes, distances} = dijkstras(cellElementsRef.current, startorFinish.startNode, startorFinish.finishNode, screenHeight, screenWidth)
         
         
         let index = 1
-
+        
         const interval = setInterval(() => {
             
             cellElementsRef.current.get(orderOfVisitedNodes[index]).element.className = 'find'
@@ -160,22 +169,25 @@ function Check(){
         const interval = setInterval(() => {
             
             let previousNode = distances.get(node).prevNode
+            
             cellElementsRef.current.get(previousNode).element.className = 'path'
             node = previousNode
             
             if (previousNode === startorFinish.startNode) {
               clearInterval(interval);
-              
+              isAnimating.current = false
             }
           }, 20);
 
-          
+          isAnimating.current = false
+         
     }
     
 
 
 
     function updateStartorFinish(node){
+        if(isAnimating.current)return;
         if(startorFinish.type === 'start'){
             setStartorFinish({...startorFinish, startNode : node})
         } else if (startorFinish.type === 'finish'){
@@ -189,10 +201,10 @@ function Check(){
         <div>
 
             <div>
-                <button className="gridButton" onClick={() => setClear(!clear)} >
+                <button className="gridButton" onClick={() => !isAnimating.current ? setClear(!clear) : null} >
                     clear
                 </button>
-                <button className="gridButton" onClick={() => animate()}>
+                <button className="gridButton" onClick={() => animateorderofvisitedNodes()}>
                     call dijikrists
                 </button>   
             </div>

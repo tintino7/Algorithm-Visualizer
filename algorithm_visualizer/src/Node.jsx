@@ -1,6 +1,6 @@
 import {  useState, useRef, forwardRef} from "react";
 
-const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, updateStartorFinish}, ref) =>{
+const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, updateStartorFinish, isAnimating}, ref) =>{
 
    
     const [myClassName, setMyClassName] = useState('') 
@@ -10,6 +10,8 @@ const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, 
     /* Mouse is down and when i mouse over make wall */
     const handleMouseOver = (e) => {
         
+        if(isAnimating)return;
+
         const target = e.target
         if (wall){
             if(target.className == 'wall'){
@@ -21,19 +23,13 @@ const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, 
         }
     };
 
-    /* Make wall when i click into a cell */
-    /* const handleClick = (e) => {
-        const target = e.target
-        if(target.className == 'wall'){
-            setMyClassName('')
-        }
-        else if(target.className == ''){
-            setMyClassName('wall')
-        }
-    } */
+    
 
     /* Function to set states for wall and startorFinish */
     const handleMouseDown = (e) => {
+
+        if(isAnimating)return;
+
         e.preventDefault()
         const target = e.target
         if(target.className === 'start' || target.className === 'finish'){
@@ -48,7 +44,7 @@ const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, 
 
     /* This is the equilant of mousedown but fro touch devices */
     function handleTouchStart(e){
-        console.log(e)
+        if(isAnimating)return;
         const target = e.target
         if(target.className === 'start' || target.className === 'finish'){
             moveStartFinish(e, target.className)
@@ -64,7 +60,7 @@ const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, 
 
     /* function to make changes to the component when touch move on touch devices */
     function handleTouchMove(e){
-
+        if(isAnimating)return;
         const touch = e.touches[0]
         const element = document.elementFromPoint(touch.clientX, touch.clientY);
 
@@ -96,7 +92,7 @@ const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, 
 
 
         const handleMouseEnter = (e) => {
-            /* e.preventdefault() */
+            if(isAnimating)return;
             const target = e.target
             if(startOrFinish.active){
                 updateStartorFinish(target.id)
