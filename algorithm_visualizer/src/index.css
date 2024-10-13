@@ -43,8 +43,20 @@ td{
   background-color: #ff0000;
 }
 
+@keyframes pulse {
+  0% {
+   
+    background-color: #d13a03;
+  }
+  100% {
+    transform: scale(1);
+    background-color: #BC4A3C;
+  }
+}
+
+
 .wall {
-  
+  animation: pulse .5s 1;
   background-color: #BC4A3C;
   border: 1px solid rgb(35, 32, 32);
   
@@ -64,12 +76,39 @@ td{
   background-color: rgb(0, 60, 255);
 }
 
-.find{
-  background-color: rgb(0, 255, 64);
+
+
+
+@keyframes finded {
+  0% {
+    transform: scale(.5);
+    background-color: #FFA500;
+  }
+  50% {
+    background-color: #f1a00abd;
+  }
+  75% {
+    transform: scale(1.2);
+    background-color: #e69a0d;
+  }
+  100% {
+    transform: scale(1);
+    background-color: #eb9e0f;
+  }
 }
 
+
+.find{
+  background-color: #ffa600e7;
+  animation-name: finded; 
+  animation-duration: 1.2s;  
+  animation-iteration-count: 1;
+  animation-direction: alternate;
+}
+
+
 .path{
-  background-color: black;
+  background-color: rgba(27, 113, 218, 0.952);
 }
 
 .gridButton{

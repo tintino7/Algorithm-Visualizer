@@ -117,12 +117,26 @@ const Node = forwardRef(({createWall, moveStartFinish, startOrFinish, wall, id, 
         } else if (startOrFinish.finishNode === id){
             NodeclassName = 'finish'
         }
+        else if (isAnimating){
+            NodeclassName = ''
+        }
         else{
             NodeclassName = myClassName
         }
 
-        
 
+        /* switch (NodeclassName) {
+            case startOrFinish.startNode === id:
+                NodeclassName = 'start'
+                break;
+            case startOrFinish.finishNode === id:
+                NodeclassName = 'finish'
+                break;
+            case isAnimating:
+                break
+            default:
+                NodeclassName = myClassName
+        } */
 
     return(
         <td 

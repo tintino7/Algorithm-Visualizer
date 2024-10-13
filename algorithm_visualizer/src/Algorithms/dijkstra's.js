@@ -1,41 +1,43 @@
 import PriorityQueue from 'js-priority-queue';
 
 function insideGrid (node, rowLength, columnLength){
-
     return node.row < rowLength && node.column < columnLength
-
 }
 
-
-
 function dijkstras (grid, startNode, endNode, rowLength, columnLength){ // grid--> hashmap, startNode---> string '0-0', endNode---> string '20-20'
-
 
     let visitedNodes = new Map()      // All the visited Nodes
     let unvisitedNodes = new Map()    // All the unvisited Nodes
     let distances = new Map()         // All the nodes and their previous nodes and distances {element : el, distance : Infinity, prevNode : null}
     let orderOfVisitedNodes = []      // The order which the nodes are visited
-
     let foundEndNode = false          // To stop the loop when the path to endNode is found
+    let counter = 0;
 
     const priorityQueue = new PriorityQueue({
-        comparator: function(a, b) {  // comparator function to give priority to min value
-          return a.distance - b.distance;
-        }
+        comparator: function(a, b) {
+            // First, prioritize by distance
+            if (a.distance === b.distance) {
+              // If distances are equal, prioritize by the order of insertion
+              return a.order - b.order;
+            }
+            return a.distance - b.distance;
+          }
       });
 
+
+      function enqueueElement(element) { // Because the PQ doesn't guarantee the elements with same weight get dequeued in the order they are queued.
+        element.order = counter++;  // Global counter to compare and prioritize the order they are queued for elements with same weight 
+        priorityQueue.queue(element); 
+      }
+
     grid.forEach((value, key) => {
-        
         if(value.element){
             unvisitedNodes.set(key, {row : value.row, column : value.column, id : key, className : value.element.className || ''})
             distances.set(key, {prevNode : null, distance : Infinity})
         }
-       
     });
-    
-    
-    priorityQueue.queue({ id: startNode, distance: 0 })
-    
+
+    enqueueElement({ id: startNode, distance: 0 })
     distances.set(startNode, { prevNode: null, distance: 0 });
 
     /* 
@@ -110,7 +112,7 @@ function dijkstras (grid, startNode, endNode, rowLength, columnLength){ // grid-
                 let neighbourDistance = distances.get(neighbourID)
                 neighbourDistance = { ...neighbourDistance, prevNode: currentNode.id, distance: dist };
                 distances.set(neighbourID, neighbourDistance)
-                priorityQueue.queue({ id: neighbourID, distance: dist })
+                enqueueElement({ id: neighbourID, distance: dist })
                
             }  
         }
