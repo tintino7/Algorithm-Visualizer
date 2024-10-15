@@ -1,4 +1,4 @@
-import PriorityQueue from 'js-priority-queue';
+import PriorityQueue from 'js-priority-queue'
 
 function insideGrid (node, rowLength, columnLength){
     return node.row < rowLength && node.column < columnLength
@@ -81,9 +81,6 @@ function dijkstras (grid, startNode, endNode, rowLength, columnLength){ // grid-
             
             // Get neighbor coordinates
             const neighbourID = `${currentNode.row + changeInRowDirection[i]}-${currentNode.column + changeInColumnDirection[i]}`;
-            
-           
-
             const neighbour = unvisitedNodes.get(neighbourID);
             
             if(!neighbour)continue; // Skip if no neighbor exists
@@ -93,7 +90,7 @@ function dijkstras (grid, startNode, endNode, rowLength, columnLength){ // grid-
            
 
             // If wall or not inside grid or it is visited
-            if(!insideGrid(neighbour, rowLength, columnLength) ||isWall ||  visitedNodes.has(neighbour.id))continue; 
+            if(!insideGrid(neighbour, rowLength, columnLength) || isWall ||  visitedNodes.has(neighbour.id))continue; 
                 
             
             if (isEndNode){
