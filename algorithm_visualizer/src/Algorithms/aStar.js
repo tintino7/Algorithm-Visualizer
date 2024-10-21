@@ -1,120 +1,116 @@
 import PriorityQueue from 'js-priority-queue'
 
 function insideGrid (node, rowLength, columnLength){
+   
     return node.row < rowLength && node.column < columnLength
 }
 
-function isWall(node){
-    return node.className === 'wall'
+
+function heuristic(nodeA, nodeB) {
+    return Math.abs(nodeA.column - nodeB.column) + Math.abs(nodeA.row - nodeB.row);
 }
-
-
-/* Psuedocode
-
-A_Star:
-
-node{
-        gcost : Number,
-        hcost : Number,
-        fcost : Number,
-        parent : String
-    }
-
-openList = All the nodes to be visited
-closedList = All the nodes already visited
-orderofVisitedNode = []
-counter = 0
-
-openList.add(startNode)
-
-startNode.gcost = 0
-startNode.hcost = heuristic(startNode, endNode)
-startNode.fcost = openList.gcost + openList.hcost
-
-
-while openList is not emty:
-    currentNode = openList.dequeue
-    orderofVisitedNodes.push(currentNode)
-
-    
-    for neighbours of currentNode:
-        if neighbour not inside grid or iswall or is inside closedList:
-            continue
-
-        if neighbour is endNode:
-            return reconstructpath()
-
-        tentative_g_cost = currentNode.gcost + 10 
-
-        if tentative_g_cost < neighbour.gcost or neighbour is not in openList:
-            neighbour.gcost = tentative_g_cost
-            neighbour.hcost = heuristic(startNode, endNode)
-            neighbour.fcost = neighbour.gcost + neighbour.hcost
-
-            neighbour.parent = currentNode
-
-            if neighbour is not in openList:
-                openList.queue(neighbour)
-            
-            
-return []   
-
-
- */
-
-
-
-
 
 
 function A_Star(grid, start, endNode, rowLength, columnLength){
     
-    const openList = new PriorityQueue()        
+    /* const openList = new PriorityQueue() */
+    const openListMap = new Map()   
     const closedList = new Map()
     const orderofVisitedNodes = []
     const changeInRowDirection = [0, -1, 0, 1]
     const changeInColumnDirection = [1, 0, -1, 0]
+    let counter = 0
+
+    const openList = new PriorityQueue({ comparator: (a, b) => {
+        if (a.fcost === b.fcost) { // If same fcost, compare gcost
+            if (a.gcost === b.gcost) { // If same gcost, compare hcost
+                if (a.hcost === b.hcost) { // If same hcost, compare the order
+                    return a.order - b.order;
+                }
+                return a.hcost - b.hcost; // Otherwise, lower hcost
+            }
+            return a.gcost - b.gcost; // Otherwise, lower gcost
+        }
+        return a.fcost - b.fcost; // Otherwise, lower fcost
+    } });
+
+
+    function enqueueElement(element) { 
+        element.order = counter++;
+        openListMap.set(element.id, element)
+        openList.queue(element); 
+      }
+
+      function getCurrentNode(){
+        const currentNode = openList.dequeue() // dequeue the next node from the queue
+        const currentNodeDetails = grid.get(currentNode.id) // get node details from grid
+        orderofVisitedNodes.push(currentNode.id) // push current node id into order of visited nodes
+        closedList.set(currentNode.id, currentNode.id) // push the node to closed list
+        return{...currentNode, row : currentNodeDetails.row, column : currentNodeDetails.column}
+    }
+
+    function getNeighbourNode(currentNode, index){
+        const neighbourId = `${currentNode.row + changeInRowDirection[index]}-${currentNode.column + changeInColumnDirection[index]}`
+        const neighbourDetails = grid.get(neighbourId)
+        console.log(neighbourDetails)
+
+        if(!neighbourDetails)return null
+        if (openListMap.has(neighbourId)){
+            return {...openListMap.get(neighbourId),
+                    isWall : neighbourDetails.element.className === 'wall',
+                    row : neighbourDetails.row, 
+                    column : neighbourDetails.column}
+        }
+        return {id : neighbourId, 
+                fcost : Infinity, 
+                gcost : Infinity, 
+                hcost : Infinity, 
+                parent : null, 
+                isWall : neighbourDetails.element.className === 'wall',
+                row : neighbourDetails.row, 
+                column : neighbourDetails.column}
+    }
+    
     let startNode = {
-        id : start,
+        id : start,  
         gcost : 0,
         hcost : 0,
         fcost : 0
     }
 
-    openList.comparator = (a, b) => {
-        if (a.fcost === b.fcost){ // If same fcost then the one with lowest gcost
-            if(a.hcost === b.hcost){ // If same gcost then one with the lowest gcost
-                return a.gcost - b.gcost 
-            }
-            return a.hcost - b.hcost
-        }
-        return a.fcost - b.fcost // The one with the lowest fcost
-    } 
-
-    openList.queue(startNode)
     startNode.gcost = 0
     startNode.hcost = heuristic(startNode, endNode)
-    startNode.fcost = openList.gcost + openList.hcost
-
+    startNode.fcost = startNode.gcost + startNode.hcost
+    enqueueElement(startNode)
+    
 
     while(openList.length > 0){
-        const currentNode = openList.dequeue()
-        const currentNodeDetails = grid.get(currentNode.id)
-        orderofVisitedNodes.push(currentNode.id)
-        closedList.set(currentNode.id, currentNode.id)
 
+        const currentNode = getCurrentNode()
 
         for(let i = 0; i < 4; i++){
-            const neighbour = `${currentNodeDetails.row + changeInRowDirection[i]}-${currentNodeDetails.column + changeInColumnDirection[i]}`
-            const neighbourDetails = grid.get(neighbour)
+            
+            const neighbour = getNeighbourNode(currentNode, i)
+            
+            if(!neighbour)continue
+            if (!insideGrid(neighbour, rowLength, columnLength) || neighbour.isWall || closedList.has(neighbour.id))continue
+            if (neighbour.id === endNode){
+                return {orderOfVisitedNodes: orderofVisitedNodes, distances: closedList}
+            }
+   
+            const tentative_g_cost = currentNode.gcost + 1
 
-            if (!insideGrid(neighbourDetails, rowLength, columnLength) || isWall(neighbourDetails) || closedList.has(neighbour)){
-                continue
+            if(tentative_g_cost < neighbour.gcost){
+                neighbour.gcost = tentative_g_cost
+                neighbour.hcost = heuristic(neighbour, grid.get(endNode))
+                neighbour.fcost = neighbour.gcost + neighbour.hcost 
+                neighbour.prevNode = currentNode
+                enqueueElement(neighbour)
             }
         }
-
-
     }
 
-    
+    return []
 }
+
+export default A_Star

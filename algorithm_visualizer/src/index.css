@@ -33,6 +33,7 @@ td{
   border: 1px solid #b3b3b3;
   /* border: 1px solid rgb(26, 255, 0); */
   background-color: #878787;
+  font-size: 10px;
 }
 
 .visitedcell{
@@ -41,6 +42,7 @@ td{
   border: 1px solid #b3b3b3;
   /* border: 1px solid rgb(26, 255, 0); */
   background-color: #ff0000;
+  font-size: smaller;
 }
 
 @keyframes pulse {
@@ -56,7 +58,7 @@ td{
 
 
 .wall {
-  animation: pulse .5s 1;
+  /* animation: pulse .5s 1; */
   background-color: #BC4A3C;
   border: 1px solid rgb(35, 32, 32);
   

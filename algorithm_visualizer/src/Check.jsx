@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useRef} from "react";
 import Node from './Node.jsx'
 import dijkstras from "./Algorithms/dijkstra's.js";
+import A_Star from "./Algorithms/aStar.js"
 
 
 function Check(){
@@ -106,7 +107,8 @@ function Check(){
                 value.element.className = value.element.className === 'path' || value.element.className === 'find' ? '' : value.element.className
             }   
         })
-        const {orderOfVisitedNodes, distances} = dijkstras(cellElementsRef.current, startorFinish.startNode, startorFinish.finishNode, screenHeight, screenWidth)
+        const {orderOfVisitedNodes, distances} = A_Star(cellElementsRef.current, startorFinish.startNode, startorFinish.finishNode, screenHeight, screenWidth)
+        console.log(orderOfVisitedNodes, distances)
         let index = 1
         const interval = setInterval(() => {
             cellElementsRef.current.get(orderOfVisitedNodes[index]).element.className = 'find'
@@ -134,8 +136,14 @@ function Check(){
             cellElementsRef.current.get(previousNode).element.className = 'path'
             node = previousNode
           }, 20);
-          isAnimating.current = false
-         
+          isAnimating.current = false   
+    }
+
+
+
+    function callAStar(){
+        const {orderOfVisitedNodes, distances} = A_Star(cellElementsRef.current, startorFinish.startNode, startorFinish.finishNode, screenHeight, screenWidth)
+        console.log(orderOfVisitedNodes, distances)
     }
     
 
@@ -157,6 +165,9 @@ function Check(){
                 <button className="gridButton" onClick={() => animateorderofvisitedNodes()}>
                     Find Path
                 </button>   
+                <button className="gridButton" onClick={() => callAStar()}>
+                    A Star
+                </button> 
             </div>
             <table id="grid">
                 <tbody>
