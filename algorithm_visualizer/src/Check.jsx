@@ -108,7 +108,6 @@ function Check(){
             }   
         })
         const {orderOfVisitedNodes, distances} = A_Star(cellElementsRef.current, startorFinish.startNode, startorFinish.finishNode, screenHeight, screenWidth)
-        console.log(orderOfVisitedNodes, distances)
         let index = 1
         const interval = setInterval(() => {
             cellElementsRef.current.get(orderOfVisitedNodes[index]).element.className = 'find'
@@ -122,6 +121,7 @@ function Check(){
 
     function animatePath(distances){
         let node = startorFinish.finishNode
+        console.log(distances.get(node))
         if(distances.get(node).prevNode === null){ // If we didn't found the end node || if start or finish node inside a fully closed wall 
             isAnimating.current = false
             return

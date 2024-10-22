@@ -45,14 +45,13 @@ function A_Star(grid, start, endNode, rowLength, columnLength){
         const currentNode = openList.dequeue() // dequeue the next node from the queue
         const currentNodeDetails = grid.get(currentNode.id) // get node details from grid
         orderofVisitedNodes.push(currentNode.id) // push current node id into order of visited nodes
-        closedList.set(currentNode.id, currentNode.id) // push the node to closed list
+        closedList.set(currentNode.id, currentNode) // push the node to closed list
         return{...currentNode, row : currentNodeDetails.row, column : currentNodeDetails.column}
     }
 
     function getNeighbourNode(currentNode, index){
         const neighbourId = `${currentNode.row + changeInRowDirection[index]}-${currentNode.column + changeInColumnDirection[index]}`
         const neighbourDetails = grid.get(neighbourId)
-        console.log(neighbourDetails)
 
         if(!neighbourDetails)return null
         if (openListMap.has(neighbourId)){
@@ -65,10 +64,22 @@ function A_Star(grid, start, endNode, rowLength, columnLength){
                 fcost : Infinity, 
                 gcost : Infinity, 
                 hcost : Infinity, 
-                parent : null, 
+                prevNode : null, 
                 isWall : neighbourDetails.element.className === 'wall',
                 row : neighbourDetails.row, 
                 column : neighbourDetails.column}
+    }
+
+    function processEndNode(endNode, currentNode){
+        orderofVisitedNodes.push(endNode.id)
+        closedList.set(endNode.id, {
+            id : endNode.id,
+            gcost : currentNode.gcost + 1,
+            hcost : 0,
+            fcost : 0,
+            prevNode : currentNode.id
+        })
+        return {orderOfVisitedNodes: orderofVisitedNodes, distances: closedList}
     }
     
     let startNode = {
@@ -95,7 +106,7 @@ function A_Star(grid, start, endNode, rowLength, columnLength){
             if(!neighbour)continue
             if (!insideGrid(neighbour, rowLength, columnLength) || neighbour.isWall || closedList.has(neighbour.id))continue
             if (neighbour.id === endNode){
-                return {orderOfVisitedNodes: orderofVisitedNodes, distances: closedList}
+              return processEndNode(neighbour, currentNode)
             }
    
             const tentative_g_cost = currentNode.gcost + 1
@@ -104,7 +115,7 @@ function A_Star(grid, start, endNode, rowLength, columnLength){
                 neighbour.gcost = tentative_g_cost
                 neighbour.hcost = heuristic(neighbour, grid.get(endNode))
                 neighbour.fcost = neighbour.gcost + neighbour.hcost 
-                neighbour.prevNode = currentNode
+                neighbour.prevNode = currentNode.id
                 enqueueElement(neighbour)
             }
         }
