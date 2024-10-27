@@ -127,7 +127,7 @@ function Grid(){
               clearInterval(interval);
               animatePath(distances) 
             }
-          }, 15);
+          }, 10);
     }
 
     function animatePath(distances){
