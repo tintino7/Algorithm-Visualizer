@@ -129,7 +129,55 @@ td{
   font-size: medium;
   font-weight: bold;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  /* transform-origin: 100% 0% 0px;
+  transform: translate3d(50px, 0px, 0px); */
 }
+
+.minimum{
+  background-color: #0436fd;
+  width: 40px;
+  margin: 0 2px 0 2px;
+  text-align: center;
+  color: #b3b3b3;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding-bottom: 10px;
+  font-size: medium;
+  font-weight: bold;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.sorted{
+  background-color: rgba(11, 185, 11, 0.774);
+  width: 40px;
+  margin: 0 2px 0 2px;
+  text-align: center;
+  color: #b3b3b3;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding-bottom: 10px;
+  font-size: medium;
+  font-weight: bold;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.currentPillar{
+  background-color: #7d26e7;
+  width: 40px;
+  margin: 0 2px 0 2px;
+  text-align: center;
+  color: #b3b3b3;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding-bottom: 10px;
+  font-size: medium;
+  font-weight: bold;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
 
 .sortingpallet{
   min-height: 75vh;
@@ -139,6 +187,7 @@ td{
   flex-wrap: nowrap;
   justify-content: center;
   align-items: end;
+ 
   
 }
 
@@ -154,4 +203,45 @@ td{
 
 .sortDiv{
   margin: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+
+.arrayControl{
+  
+  color: #ffffff;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  text-align: center;
+}
+
+.arrayControlText{
+  margin: 0 0 10px 0;
+}
+
+
+@media (max-width: 700px) {
+  .sortingpallet{
+    min-height: 60vh;
+    width: 95vw;
+    margin: 30px auto 0 auto
+  }
+  .sortDiv{
+    justify-content: center;
+  }
+  .pillar{
+    width: 25px;
+    font-size: smaller;
+    font-weight: normal;
+  }
+  .sortButton{
+    padding: 5px;
+    margin: 5px;
+    font-size: small;  
+  }
+  .arrayControlText{
+    font-size: smaller;
+  }
+  
 }
