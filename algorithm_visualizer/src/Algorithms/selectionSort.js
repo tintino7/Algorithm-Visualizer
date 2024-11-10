@@ -1,46 +1,47 @@
-function selectionSort(array){
 
-    const result = []
-    const length = array.length
-    let minIndex = null
-    let currentIndex = null
 
-    function swap(current, minimum){
-        if (current == minimum) return
-        [array[current], array[minimum]] = [array[minimum], array[current]]
+function selectionSortAlgorithm(pillars, setPillars){
+  
+    let minimumIndex = null
+    let interval = 0
+    let currntIndex = null
+    const pillarsLength = pillars.length
+    const newPillars = [...pillars]
+    const resultsArray = []
+    
+    function switchPillarsPosition(outerIndex, minimumIndex){
+        [newPillars[minimumIndex], newPillars[outerIndex]] = [newPillars[outerIndex], newPillars[minimumIndex]]
     }
 
-    /* function getLength(index){
-        return parseInt(array[index].props.children)
+    function animateIteration(currentIndex, previousIndex){
+        newPillars[currentIndex].className = 'currentPillar'
+        newPillars[previousIndex].className = 'pillar'
+        resultsArray.push(JSON.parse(JSON.stringify(newPillars)))
     }
 
-    function changeClassName(index, className){
-        array[index].props.className = className
-    }
- */
-    for (let i = 0; i<length; i++){
-        minIndex = i
-        for (let j = i + 1; j<length; j++){
-            currentIndex = j
-            
-            if (array[currentIndex] < array[minIndex]){
-                minIndex = j
+    // Set first node as minimum
+    newPillars[0].className = 'minimum'
+    resultsArray.push(JSON.parse(JSON.stringify(newPillars)))
+    
+    
+    for(let outerIndex = 0; outerIndex < pillarsLength; outerIndex++){
+        minimumIndex = outerIndex
+        for(let innerIndex = outerIndex + 1; innerIndex < pillarsLength; innerIndex++){
+            currntIndex = innerIndex
+            animateIteration(currntIndex, currntIndex - 1)
+            if(newPillars[currntIndex].height < newPillars[minimumIndex].height){
+                minimumIndex = currntIndex
             }
-            /* changeClassName(currentIndex, 'currentPillar')
-            changeClassName(minIndex, 'minimum') */
-            
         }
-
-        swap(i, minIndex)
-        result.push(array)
+        switchPillarsPosition(outerIndex, minimumIndex)
     }
+ 
 
-    return result
+    return resultsArray
 }
 
-export default selectionSort
 
-
+export default selectionSortAlgorithm
 
 /* Four states of a pillar
 
