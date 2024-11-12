@@ -1,47 +1,69 @@
+function selectionSortAlgorithm(pillars) {
+  let minimumIndex = null;
+  let previousMinimumIndex = null;
+  let currntIndex = null;
+  const pillarsLength = pillars.length;
+  const newPillars = [...pillars];
+  const resultsArray = [];
 
+  function switchPillarsPosition(outerIndex, minimumIndex, currentIndex) {
+    newPillars[currentIndex].className = "pillar";
+    newPillars[minimumIndex].className = "sorted";
 
-function selectionSortAlgorithm(pillars, setPillars){
-  
-    let minimumIndex = null
-    let interval = 0
-    let currntIndex = null
-    const pillarsLength = pillars.length
-    const newPillars = [...pillars]
-    const resultsArray = []
-    
-    function switchPillarsPosition(outerIndex, minimumIndex){
-        [newPillars[minimumIndex], newPillars[outerIndex]] = [newPillars[outerIndex], newPillars[minimumIndex]]
+    [newPillars[minimumIndex], newPillars[outerIndex]] = [
+      newPillars[outerIndex],
+      newPillars[minimumIndex],
+    ];
+
+    resultsArray.push(JSON.parse(JSON.stringify(newPillars)));
+  }
+
+  function animateIteration(
+    currentIndex,
+    previousIndex,
+    minimumIndex,
+    previousMinimumIndex
+  ) {
+    newPillars[currentIndex].className = "currentPillar";
+    if (newPillars[previousIndex].className !== "sorted") {
+      newPillars[previousIndex].className = "pillar";
     }
+    newPillars[previousMinimumIndex].className = "pillar";
+    newPillars[minimumIndex].className = "minimum";
+    resultsArray.push(JSON.parse(JSON.stringify(newPillars)));
+  }
 
-    function animateIteration(currentIndex, previousIndex){
-        newPillars[currentIndex].className = 'currentPillar'
-        newPillars[previousIndex].className = 'pillar'
-        resultsArray.push(JSON.parse(JSON.stringify(newPillars)))
+  // Set first node as minimum
+  newPillars[0].className = "minimum";
+  resultsArray.push(JSON.parse(JSON.stringify(newPillars)));
+
+  for (let outerIndex = 0; outerIndex < pillarsLength; outerIndex++) {
+    minimumIndex = outerIndex;
+    previousMinimumIndex = minimumIndex;
+    for (
+      let innerIndex = outerIndex + 1;
+      innerIndex < pillarsLength;
+      innerIndex++
+    ) {
+      currntIndex = innerIndex;
+      if (newPillars[currntIndex].height < newPillars[minimumIndex].height) {
+        previousMinimumIndex = minimumIndex;
+        minimumIndex = currntIndex;
+      }
+      animateIteration(
+        currntIndex,
+        currntIndex - 1,
+        minimumIndex,
+        previousMinimumIndex
+      );
     }
+    switchPillarsPosition(outerIndex, minimumIndex, currntIndex);
+  }
 
-    // Set first node as minimum
-    newPillars[0].className = 'minimum'
-    resultsArray.push(JSON.parse(JSON.stringify(newPillars)))
-    
-    
-    for(let outerIndex = 0; outerIndex < pillarsLength; outerIndex++){
-        minimumIndex = outerIndex
-        for(let innerIndex = outerIndex + 1; innerIndex < pillarsLength; innerIndex++){
-            currntIndex = innerIndex
-            animateIteration(currntIndex, currntIndex - 1)
-            if(newPillars[currntIndex].height < newPillars[minimumIndex].height){
-                minimumIndex = currntIndex
-            }
-        }
-        switchPillarsPosition(outerIndex, minimumIndex)
-    }
- 
-
-    return resultsArray
+  return resultsArray;
 }
 
-
-export default selectionSortAlgorithm
+export default selectionSortAlgorithm;
 
 /* Four states of a pillar
 
