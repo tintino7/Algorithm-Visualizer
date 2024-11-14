@@ -6,7 +6,7 @@ import SortingPallet from './Components/Sorting/SortingPallet.jsx'
 function App() {
 
   return (
-    <SortingPallet/>
+    <Grid/>
   )
 }
 
