@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import selectionSortAlgorithm from "./Algorithms/selectionSort";
-import experiment from "./Algorithms/experiment";
+import selectionSortAlgorithm from "../../Algorithms/Sorting/selectionSort";
 
-import Pillar from "./assets/Pillar";
+
+import Pillar from "./Pillar";
 
 function SortingPallet() {
   const maxSize = Math.floor(

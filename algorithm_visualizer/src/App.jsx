@@ -1,5 +1,5 @@
-import Grid from './Grid.jsx'
-import SortingPallet from './SortingPallet.jsx'
+import Grid from './Components/Path_Finding/Grid.jsx'
+import SortingPallet from './Components/Sorting/SortingPallet.jsx'
 
 
 

@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useRef } from "react";
 import Node from "./Node.jsx";
-import dijkstras from "./Algorithms/dijkstra's.js";
-import A_Star from "./Algorithms/aStar.js";
+import dijkstras from "../../Algorithms/Path_Finding/dijkstra's.js";
+import A_Star from "../../Algorithms/Path_Finding/aStar.js";
 
 function Grid() {
   /* State to control width and height of grid width and height*/
