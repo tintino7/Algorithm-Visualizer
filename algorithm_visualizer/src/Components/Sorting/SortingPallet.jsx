@@ -3,6 +3,7 @@ import selectionSortAlgorithm from "../../Algorithms/Sorting/selectionSort";
 
 
 import Pillar from "./Pillar";
+import { Link } from "react-router-dom";
 
 function SortingPallet() {
   const maxSize = Math.floor(
@@ -81,11 +82,9 @@ function SortingPallet() {
           value={algorithm}
           onChange={(e) => setAlgorithm(e.target.value)}
         >
-          <option value=" Select an Algorithm">Select an Algorithm</option>
+          
           <option value="selectionsort">Selection Sort</option>
-          <option value="Bubble Sort">Bubble Sort</option>
-          <option value="mergesort">Merge Sort</option>
-          <option value="quicksort">Quick Sort</option>
+          
         </select>
 
         <div className="arrayControl">
@@ -122,6 +121,11 @@ function SortingPallet() {
         >
           Sort
         </button>
+        <Link to={'/'}>
+        <button className="sortButton">
+          Home
+        </button>
+        </Link>
       </div>
 
       <div className="sortingpallet">

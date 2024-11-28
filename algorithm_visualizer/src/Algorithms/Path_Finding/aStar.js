@@ -103,7 +103,7 @@ function A_Star(grid, start, endNode, rowLength, columnLength){
             
             const neighbour = getNeighbourNode(currentNode, i)
             
-            if(!neighbour)continue
+            if (!neighbour)continue
             if (!insideGrid(neighbour, rowLength, columnLength) || neighbour.isWall || closedList.has(neighbour.id))continue
             if (neighbour.id === endNode){
               return processEndNode(neighbour, currentNode)
@@ -121,7 +121,7 @@ function A_Star(grid, start, endNode, rowLength, columnLength){
         }
     }
 
-    return []
+    return {orderOfVisitedNodes: orderofVisitedNodes, distances: closedList}
 }
 
 export default A_Star

@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import Node from "./Node.jsx";
 import dijkstras from "../../Algorithms/Path_Finding/dijkstra's.js";
 import A_Star from "../../Algorithms/Path_Finding/aStar.js";
+import { Link } from "react-router-dom";
 
 function Grid() {
   /* State to control width and height of grid width and height*/
@@ -165,7 +166,14 @@ function Grid() {
   function animatePath(distances) {
     let node = startorFinish.finishNode;
     console.log(distances.get(node));
-    if (distances.get(node).prevNode === null) {
+
+    if(!distances.has(node)){ // this checking for a star because we didn't intialize an map in the start like dijkstra
+      // If we didn't found the end node || if start or finish node inside a fully closed wall
+      isAnimating.current = false;
+      return;
+    }
+
+    if (distances.get(node).prevNode === null || undefined) {
       // If we didn't found the end node || if start or finish node inside a fully closed wall
       isAnimating.current = false;
       return;
@@ -195,7 +203,13 @@ function Grid() {
 
   return (
     <div>
-      <div>
+      <div className="gridNavBar">
+        <Link to={'/'}>
+          <button className="gridButton">
+            Home
+          </button>
+        </Link>
+      
         <button
           className="gridButton"
           onClick={() => (!isAnimating.current ? setClear(!clear) : null)}
