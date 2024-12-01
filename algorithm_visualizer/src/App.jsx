@@ -2,7 +2,7 @@ import Grid from './Components/Path_Finding/Grid.jsx'
 import SortingPallet from './Components/Sorting/SortingPallet.jsx'
 import Home from './Components/Home.jsx'
 
-import {createBrowserRouter, RouterProvider, BrowserRouter} from 'react-router-dom'
+import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 
 const router = createBrowserRouter([
   {
