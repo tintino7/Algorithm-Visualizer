@@ -10,11 +10,11 @@ const router = createBrowserRouter([
     element : <Home/>
   },
   {
-    path : 'sorting',
+    path : '/sorting',
     element : <SortingPallet/>
   },
   {
-    path : 'pathfinding',
+    path : '/pathfinding',
     element : <Grid/>
   }
 
